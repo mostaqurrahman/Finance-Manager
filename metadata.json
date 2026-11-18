@@ -1,0 +1,6 @@
+{
+  "name": "Personal Finance Manager",
+  "description": "Multi-user, multi-device personal financial management app with cloud sync, accounts, budgeting, loans, and voice entry.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,1469 @@
+# MASTER PROMPT: PERSONAL FINANCE MANAGER
+## Multi-User | Multi-Device | Fully Responsive | Offline-First Financial Web Application
+
+Act as a senior full-stack software architect, financial application developer, UI/UX designer, database engineer, cybersecurity engineer, and QA specialist.
+
+Your task is to BUILD a complete, functional, production-oriented Personal Finance Management Web Application.
+
+The application must support unlimited independent users, self-registration, multiple authentication methods, cross-device access, private financial workspaces, offline-first functionality, and automatic cloud synchronization.
+
+This is NOT a simple expense tracker or a static dashboard.
+
+Build a real financial management platform that anyone can register for and use to manage their own complete financial life.
+
+==================================================
+1. PROJECT VISION
+==================================================
+
+Application Name: Personal Finance Manager
+
+Application Type: Multi-User Personal Financial Management Platform
+
+Platform: Responsive Website / Progressive Web Application (PWA)
+
+Target Devices:
+- Android Smartphones
+- iPhones
+- Android Tablets
+- iPads
+- Windows Laptops
+- Windows Desktops
+- MacBooks
+- Mac Desktops
+- Other compatible browsers and devices
+
+Primary Database: Firebase Cloud Firestore
+
+Authentication: Firebase Authentication
+
+File Storage: Firebase Cloud Storage
+
+Primary Currency: Bangladeshi Taka (BDT / ৳)
+
+Primary Language: Bengali
+
+Secondary Language: English
+
+Default Language: Bengali
+
+Voice Input Language: Bengali
+
+Timezone: Asia/Dhaka
+
+Date Format: 10 Nov 2026
+
+Time Format: 04:30 PM
+
+Number Format: 1,00,000
+
+Architecture: React + TypeScript + Firebase + Node.js Server-side Runtime
+
+Design Style: Clean, Minimal, Modern, Professional and Premium.
+
+==================================================
+2. PUBLIC MULTI-USER REGISTRATION SYSTEM
+==================================================
+
+CRITICAL REQUIREMENT:
+
+Anyone must be able to create an account and use this application independently.
+
+REMOVE all previous single-owner restrictions, fixed owner email restrictions, and OWNER_EMAIL allowlist requirements.
+
+The application must support public self-registration.
+
+Every registered user must receive their own isolated personal finance workspace.
+
+There must be NO requirement for administrator approval to register.
+
+## 2.1 Authentication Methods
+
+Implement the following methods:
+
+### A. Continue with Google
+
+- Allow anyone to register using their own Google account.
+- Support direct Google Sign-In for existing users.
+- Automatically create a user profile for new users.
+- Return existing users to their personal dashboard.
+- Support Google account sign-out.
+
+### B. Email and Password Registration
+
+Allow users to register with:
+
+- Full Name
+- Email Address
+- Password
+- Confirm Password
+
+Requirements:
+
+- Email validation.
+- Secure password validation.
+- Password visibility toggle.
+- Email verification.
+- Duplicate email detection.
+- Registration success confirmation.
+
+Any valid email address, including Gmail addresses, should be accepted.
+
+The email/password option must use a password created specifically for this application. Never request or collect the user's actual Gmail password.
+
+### C. Email and Password Login
+
+Existing users can log in using their registered email and application password.
+
+Include:
+
+- Forgot Password
+- Password Reset Email
+- Email Verification
+- Resend Verification Email
+- Logout
+
+### D. Account Linking
+
+Where appropriate, support linking Google and email/password authentication methods to the same Firebase user account.
+
+Prevent accidental duplicate accounts.
+
+Never merge accounts or financial data merely because two email addresses appear similar. Require a verified and secure account-linking process.
+
+## 2.2 User Registration Experience
+
+Create a professional authentication interface.
+
+Login Page:
+
+- Continue with Google
+- Email Address
+- Password
+- Remember Me (secure session persistence)
+- Sign In
+- Forgot Password
+- Create Account
+
+Registration Page:
+
+- Full Name
+- Email Address
+- Password
+- Confirm Password
+- Accept Terms and Privacy Policy
+- Create Account
+- Continue with Google
+
+Add proper loading states, validation messages, and error handling.
+
+## 2.3 Independent User Profiles
+
+Every user must have:
+
+- Unique Firebase UID
+- Display Name
+- Email Address
+- Profile Photo (optional)
+- Registration Date
+- Preferred Language
+- Theme Preference
+- Currency Preference
+- Timezone
+- Account Status
+- Application Settings
+
+Each user's financial data must be associated with their Firebase UID.
+
+Never use email address as the primary database ownership key. Use Firebase UID.
+
+==================================================
+3. MULTI-DEVICE ACCESS AND CLOUD SYNCHRONIZATION
+==================================================
+
+This is one of the most important features.
+
+The same user must be able to access their personal financial records from different devices.
+
+Example:
+
+1. A user registers on an Android phone using Google.
+2. They create Cash, Bank, and bKash accounts.
+3. They add transactions and loan records.
+4. Later, they open the application on their laptop.
+5. They log in with the SAME Google account.
+6. Their existing data automatically appears.
+7. They edit a transaction on the laptop.
+8. The updated information becomes available on their phone after synchronization.
+
+The same must work between:
+
+- Android to Laptop
+- iPhone to Desktop
+- Tablet to Smartphone
+- Desktop to Laptop
+- Any other supported device combination.
+
+## Synchronization Rules
+
+- Firebase Cloud Firestore is the primary shared database.
+- Every user's records must be stored in their own UID-based namespace.
+- All logged-in devices must synchronize with the same cloud data.
+- Use realtime listeners where appropriate.
+- Display synchronization status clearly.
+- Prevent duplicated transactions.
+- Preserve transaction history.
+- Detect conflicting edits.
+- Never silently discard financial records.
+
+Provide:
+
+- Synced
+- Pending Sync
+- Syncing
+- Sync Failed
+- Conflict Needs Review
+
+A newly registered user must complete their first login online before their account can be used offline on that device.
+
+==================================================
+4. FULLY RESPONSIVE WEBSITE DESIGN
+==================================================
+
+Create one responsive website that adapts automatically to any screen size.
+
+Do not create separate applications for mobile and desktop.
+
+Use a single shared codebase with adaptive layouts.
+
+## 4.1 Responsive Breakpoints
+
+Use sensible breakpoints, such as:
+
+- Small Mobile: 320px–480px
+- Large Mobile: 481px–767px
+- Tablet: 768px–1023px
+- Small Desktop: 1024px–1279px
+- Large Desktop: 1280px and above
+
+Adjust the layout according to available screen width.
+
+## 4.2 Desktop Design
+
+For desktop:
+
+- Collapsible left sidebar.
+- Top navigation bar.
+- Main dashboard content.
+- Responsive summary cards.
+- Financial charts.
+- Detailed transaction tables.
+- Multi-column forms where appropriate.
+
+## 4.3 Mobile Design
+
+For mobile:
+
+- Compact top navigation.
+- Mobile menu or bottom navigation.
+- Touch-friendly buttons.
+- Floating Quick Add button.
+- Responsive transaction cards.
+- Single-column forms.
+- Responsive charts.
+- Mobile-friendly date and amount inputs.
+- No horizontal overflow.
+- No desktop-only interactions.
+
+## 4.4 Tablet Design
+
+Provide a tablet-optimized layout.
+
+Use a collapsible sidebar or compact navigation.
+
+Forms, charts, and tables must adapt to tablet dimensions.
+
+## 4.5 PWA
+
+Make the website installable as a Progressive Web App.
+
+Implement:
+
+- Web App Manifest
+- Service Worker
+- App Icons
+- Install Prompt
+- App Shell Caching
+- Offline Fallback
+
+A user must be able to add the application to their device's home screen when the browser supports installation.
+
+The application remains a website/PWA. Native Android and iOS applications are not required in this phase.
+
+==================================================
+5. APPLICATION TECHNOLOGY
+==================================================
+
+Use:
+
+Frontend:
+- React
+- TypeScript
+- Tailwind CSS
+- React Router
+- Lucide React
+- React Hook Form
+- Zod
+
+Backend:
+- Node.js Server-side Runtime
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Storage
+- Firebase Security Rules
+
+Data Visualization:
+- Recharts
+
+Offline:
+- Firestore Persistent Cache
+- IndexedDB
+- Service Worker
+- PWA
+
+Export:
+- XLSX library
+- PDF library
+- JSON Backup/Restore
+
+AI:
+- Gemini API through secure server-side endpoints.
+
+Use the currently supported modular Firebase SDK.
+
+Avoid unnecessary technologies and complicated infrastructure.
+
+==================================================
+6. USER-SPECIFIC DATABASE ARCHITECTURE
+==================================================
+
+Design the database around individual user ownership.
+
+Recommended Firestore structure:
+
+users/{uid}/profile
+
+users/{uid}/accounts/{accountId}
+
+users/{uid}/transactions/{transactionId}
+
+users/{uid}/transfers/{transferId}
+
+users/{uid}/categories/{categoryId}
+
+users/{uid}/people/{personId}
+
+users/{uid}/loans/{loanId}
+
+users/{uid}/loanRepayments/{repaymentId}
+
+users/{uid}/savingsGoals/{goalId}
+
+users/{uid}/savingsProducts/{savingId}
+
+users/{uid}/assets/{assetId}
+
+users/{uid}/liabilities/{liabilityId}
+
+users/{uid}/budgets/{budgetId}
+
+users/{uid}/recurringRules/{ruleId}
+
+users/{uid}/notifications/{notificationId}
+
+users/{uid}/auditLogs/{logId}
+
+users/{uid}/trash/{trashId}
+
+users/{uid}/attachments/{attachmentId}
+
+users/{uid}/transactionRevisions/{revisionId}
+
+users/{uid}/syncConflicts/{conflictId}
+
+users/{uid}/settings/{settingId}
+
+This structure is illustrative; implement a maintainable structure that follows the same strict ownership and isolation principles.
+
+Every financial record must belong to exactly one authenticated user.
+
+Use unique IDs, timestamps, schema versions, and relevant revision metadata.
+
+Never allow a user to query another user's records.
+
+==================================================
+7. FIREBASE SECURITY AND USER PRIVACY
+==================================================
+
+Implement secure multi-user Firebase authorization.
+
+## Firestore Rules
+
+Every user must only be able to access records belonging to their own authenticated UID.
+
+Use the equivalent of:
+
+request.auth != null &&
+request.auth.uid == userId
+
+Apply appropriate validation to document creation, updates, and deletion.
+
+## Storage Rules
+
+Store attachments in user-specific paths, such as:
+
+users/{uid}/receipts/{fileName}
+
+Only the authenticated owner can read or write those files.
+
+## Additional Security
+
+- Never expose private financial data publicly.
+- Never expose privileged Firebase credentials in the frontend.
+- Never rely exclusively on frontend route guards.
+- Protect Firebase Storage.
+- Reject unauthenticated database access.
+- Do not allow user-to-user data access.
+- Validate ownership of referenced records.
+- Add upload size and file type restrictions.
+- Use server-side secrets for Gemini API calls.
+- Provide complete Firestore and Storage Security Rules.
+
+Every user must have access only to their own personal finance workspace.
+
+==================================================
+8. FIRST-TIME USER SETUP WIZARD
+==================================================
+
+After successful first registration or login, check whether setup has been completed.
+
+For new users, show a setup wizard.
+
+Steps:
+
+1. Welcome Screen.
+2. Confirm Full Name.
+3. Select Language.
+4. Select Timezone.
+5. Set Currency: BDT.
+6. Create Cash Account.
+7. Add Bank Accounts.
+8. Add Mobile Banking Accounts.
+9. Enter Opening Balances.
+10. Select Opening Balance Dates.
+11. Confirm Default Categories.
+12. Confirm Default People.
+13. Configure PIN/Password Lock.
+14. Configure Auto-lock Duration.
+15. Configure Notifications.
+16. Complete Setup.
+
+Each user must complete this process independently.
+
+A new user's dashboard must initially show zero balances unless they enter actual opening balances or actual transactions.
+
+Never insert fake financial records.
+
+Allow users to skip optional setup steps and complete them later.
+
+==================================================
+9. CORE PERSONAL FINANCE MODULES
+==================================================
+
+The following financial modules must be implemented independently for every user.
+
+### A. Dashboard
+### B. Income Management
+### C. Expense Management
+### D. Transaction Management
+### E. Quick Add
+### F. Account Management
+### G. Transfers
+### H. People Management
+### I. Category Management
+### J. Loan Given
+### K. Loan Taken
+### L. Loan Repayments
+### M. Savings Accounts
+### N. Savings Goals
+### O. DPS / FDR
+### P. Asset Management
+### Q. Liability Management
+### R. Budget Management
+### S. Recurring Transactions
+### T. Reports and Analytics
+### U. Notification Center
+### V. Trash and Audit History
+### W. Data Backup and Restore
+### X. Settings and Security
+
+All modules must contain real functionality and database integration.
+
+==================================================
+10. DASHBOARD
+==================================================
+
+Create a clean financial dashboard.
+
+Summary Cards:
+
+- Total Income
+- Total Expense
+- Available Balance
+- Cash Balance
+- Bank Balance
+- Mobile Banking Balance
+- Total Savings
+- Loan Given
+- Loan Taken
+- Total Assets
+- Total Liabilities
+- Net Worth
+
+Charts:
+
+- Monthly Income vs Expense
+- Category-wise Expense
+- Person-wise Expense
+- Account-wise Balance
+- Savings Trend
+
+Filters:
+
+- Today
+- This Week
+- This Month
+- This Year
+- Custom Date Range
+
+Also display:
+
+- Recent Transactions
+- Upcoming Loan Due
+- Budget Alerts
+- Savings Goal Progress
+- Pending Recurring Transactions
+- Sync Status
+
+Dashboard must show real user data, never shared or demo financial information.
+
+==================================================
+11. ACCOUNT MANAGEMENT
+==================================================
+
+Default account types:
+
+Cash:
+- Personal Cash
+- Home Cash
+- Custom Cash
+
+Bank:
+- DBBL
+- City Bank
+- BRAC Bank
+- Other Banks
+
+Mobile Banking:
+- bKash
+- Nagad
+- Rocket
+- Upay
+
+Savings:
+- Bank Savings
+- Cash Savings
+- Other Savings
+
+Savings Products:
+- DPS
+- FDR
+
+Custom accounts must be supported.
+
+Every account must have:
+
+- Account Name
+- Account Type
+- Provider
+- Opening Balance
+- Opening Balance Date
+- Current Balance
+- Description
+- Status
+
+Allow Add, Edit, Archive, Search, Filter, Account Details, and Balance Adjustment.
+
+Each user must manage their own accounts independently.
+
+Payment Channel and Account must be separate concepts.
+
+Debit Card can be used as a payment channel linked to a Bank Account.
+
+Credit Card Management is excluded from the current version.
+
+==================================================
+12. TRANSACTION MANAGEMENT
+==================================================
+
+Transaction form fields:
+
+- Transaction Type
+- Amount
+- Category
+- Subcategory
+- Person
+- Payment Method
+- Account
+- Date
+- Time
+- Description
+- Note
+- Receipt / Image
+- Transaction ID
+- Sync Status
+
+Supported Transaction Types:
+
+1. Income
+2. Expense
+3. Transfer
+4. Loan Given
+5. Loan Received
+6. Loan Repayment Received
+7. Loan Repayment Paid
+8. Savings Deposit
+9. Savings Withdrawal
+10. Asset Purchase
+11. Asset Sale
+12. Refund
+13. Balance Adjustment
+
+Default Income Categories:
+
+- Salary
+- Business Income
+- Freelancing
+- Investment Profit
+- Rental Income
+- Gift
+- Other
+
+Default Expense Categories:
+
+- Food & Grocery
+- House Rent
+- Utilities
+- Transportation
+- Shopping & Clothing
+- Medical
+- Education
+- Family Expense
+- Wife Expense
+- Personal Expense
+- Entertainment & Travel
+- Donation & Charity
+- Business Expense
+- Other
+
+Person List:
+
+- Family
+- Wife
+- Personal
+- Father
+- Mother
+- Brother
+- Sister
+- Friend
+- Business
+- Others
+
+Allow every user to create and customize their own categories, subcategories, and people.
+
+## Split Transaction
+
+A transaction can be divided into multiple expense lines.
+
+Example:
+
+Total ৳2,000:
+
+- Family: ৳1,000
+- Personal: ৳600
+- Wife: ৳400
+
+The split total must equal the parent amount.
+
+Count the parent transaction only once.
+
+## Refund
+
+Link Refund to its original Expense.
+
+Example:
+
+Original Expense: ৳2,000
+
+Refund: ৳500
+
+Net Expense: ৳1,500
+
+Refund must not be classified as new Income.
+
+==================================================
+13. TRANSFERS AND LOANS
+==================================================
+
+### Transfers
+
+Allow transfer between the user's own accounts.
+
+Example:
+
+DBBL → bKash = ৳5,000
+
+Update both accounts.
+
+Do not count internal Transfers as Income or Expense.
+
+Support Transfer History and optional transfer fees.
+
+### Loan Given
+
+- Borrower Name
+- Principal
+- Date
+- Due Date
+- Repayment History
+- Remaining Receivable
+- Status
+
+### Loan Taken
+
+- Lender Name
+- Principal
+- Date
+- Due Date
+- Repayment History
+- Remaining Liability
+- Status
+
+Support:
+
+- Full Payment
+- Partial Payment
+- Installments
+- Multiple Repayments
+- Due Date
+- Pending / Partial / Completed / Overdue
+
+Loan Given is an asset/receivable, not an Expense.
+
+Loan Taken is a liability, not Income.
+
+Principal repayment is not normal Income or Expense.
+
+==================================================
+14. SAVINGS, ASSETS AND LIABILITIES
+==================================================
+
+### Savings
+
+Support:
+
+- Savings Account
+- Cash Savings
+- Savings Goals
+- DPS
+- FDR
+
+Savings Goal Example:
+
+Target: ৳50,000
+
+Saved: ৳20,000
+
+Remaining: ৳30,000
+
+Show progress and deadline.
+
+Savings movement is not normal Income or Expense.
+
+Avoid duplicate asset counting.
+
+### Assets
+
+Default categories:
+
+- Land
+- House
+- Gold
+- Vehicle
+- Electronics
+- Business Ownership
+- Others
+
+Track:
+
+- Purchase Date
+- Purchase Price
+- Current Value
+- Description
+- Attachments
+- Asset Sale
+- Value History
+
+### Liabilities
+
+Track:
+
+- Personal Debt
+- Bank Loan
+- Family / Friend Debt
+- Unpaid Bills
+- Other Liabilities
+
+Track Original Amount, Paid Amount, Remaining Amount, Due Date, and Repayment History.
+
+Do not duplicate loan records from the Loan module.
+
+==================================================
+15. BUDGET AND RECURRING MANAGEMENT
+==================================================
+
+Budget Types:
+
+- Monthly Overall Budget
+- Category-wise Monthly Budget
+- Yearly Budget
+- Custom Period
+
+Default suggested alerts:
+
+- 70%
+- 85%
+- 100%
+
+Allow users to customize thresholds.
+
+Exclude transfers and principal loan repayment from budget expenses.
+
+### Recurring Transactions
+
+Support:
+
+- Rent
+- Utilities
+- Tuition
+- Subscription
+- Other Expenses
+
+Frequency:
+
+- Daily
+- Weekly
+- Monthly
+- Yearly
+
+When a recurring item becomes due, notify the user.
+
+Do not automatically post an actual financial transaction.
+
+User must confirm before saving.
+
+==================================================
+16. REPORTS AND EXPORT
+==================================================
+
+Every user should have independent reports.
+
+Reports:
+
+- Daily
+- Weekly
+- Monthly
+- Yearly
+- Custom Date Range
+- Income
+- Expense
+- Category-wise
+- Person-wise
+- Account-wise
+- Loan Given
+- Loan Taken
+- Loan Repayment
+- Savings
+- Assets
+- Liabilities
+- Net Worth
+- Transfer History
+- Refund
+- Budget Performance
+
+Provide search and filters.
+
+Export actual user data into:
+
+- Excel (.xlsx)
+- PDF
+- JSON Backup
+
+==================================================
+17. FINANCIAL CALCULATION ENGINE
+==================================================
+
+Build one centralized calculation service.
+
+All financial summaries must use consistent calculation logic.
+
+Account Balance:
+
+Opening Balance + Posted Inflows - Posted Outflows + Valid Adjustments.
+
+Total Income:
+
+Only genuine Income transactions.
+
+Exclude Loan Received, Transfers, Savings Movements and Loan Principal Repayments.
+
+Total Expense:
+
+Genuine Expenses - Linked Refunds.
+
+Exclude Transfers, Savings Movement, Loan Given, Principal Repayment, and capitalized Asset Purchases.
+
+Available Balance:
+
+Sum of active liquid Cash, Bank, and Mobile Wallet Accounts.
+
+Loan Given Outstanding:
+
+Original Principal - Received Principal Repayments.
+
+Loan Taken Outstanding:
+
+Original Principal - Paid Principal Repayments.
+
+Net Worth:
+
+Total Assets - Total Liabilities.
+
+Count each financial asset only once.
+
+A bank savings account that is already counted as an account balance must not be added again as another asset.
+
+A Savings Goal is an allocation record, not an additional asset.
+
+Loan Given and Loan Taken must be represented once in the financial position calculation.
+
+Use precise monetary arithmetic. Prefer integer poisha as the internal representation, with BDT formatting in the interface.
+
+==================================================
+18. SEARCH, EDIT, TRASH AND AUDIT
+==================================================
+
+Implement:
+
+- Global Search
+- Transaction Search
+- Category Filter
+- Person Filter
+- Account Filter
+- Date Filter
+- Amount Filter
+- Edit
+- Soft Delete
+- Trash
+- Restore
+- Permanent Delete with confirmation
+- Audit History
+
+Every user must only see their own records and history.
+
+Maintain before/after snapshots for important financial edits.
+
+Audit history should be append-only under normal application operations.
+
+==================================================
+19. OFFLINE-FIRST AND DEVICE-SPECIFIC FUNCTIONALITY
+==================================================
+
+The application must work offline on devices where the browser and Firebase SDK support the required persistent storage.
+
+Implement:
+
+- Firestore Persistent Cache
+- IndexedDB
+- Offline Transaction Entry
+- Local Attachment Queue
+- Pending Sync
+- Automatic Online Sync
+- Retry Mechanism
+- Duplicate Prevention
+- Conflict Detection
+- Revision History
+
+When offline, an already authenticated user on that device must be able to:
+
+- View previously cached data.
+- Add Income.
+- Add Expense.
+- Add Transfers.
+- Add Loan Records.
+- Add Repayments.
+- Add Savings Records.
+- Edit supported records.
+
+When the internet returns, sync pending changes automatically.
+
+Important:
+
+- A new device requires an internet connection for its first login.
+- Previously cached data may be available offline only on that device.
+- Cloud data becomes available on other devices after successful login and synchronization.
+- Firestore Web persistence is not supported in every browser, so detect capability and provide a fallback.
+- Do not claim offline support when the browser has not enabled it.
+
+### Device Privacy
+
+If a user signs out from a shared device:
+
+- Warn about pending unsynced records.
+- Do not lose pending work silently.
+- Separate user-specific local data.
+- Prevent the next user from viewing the previous user's cached information.
+- Clear or securely isolate application-specific local data.
+- Do not display private records before the new authentication state is verified.
+
+Ask users whether a device is trusted before retaining sensitive offline financial data.
+
+==================================================
+20. USER SECURITY AND PERSONAL SETTINGS
+==================================================
+
+Provide:
+
+- Google Login
+- Email/Password Login
+- Email Verification
+- Password Reset
+- Secure Logout
+- Optional PIN Lock
+- Optional Password Lock
+- Configurable Auto-lock
+- User-specific Settings
+
+Recommended Auto-lock Default: 5 minutes.
+
+Allow changing the timeout, including longer durations.
+
+Never store PINs or passwords in plaintext.
+
+Use a secure salted password derivation method through Web Crypto API for any local application PIN or secondary lock.
+
+Application PIN Lock is an additional privacy layer, not a replacement for Firebase Authentication.
+
+==================================================
+21. NOTIFICATIONS
+==================================================
+
+Each user should have a private notification center.
+
+Support:
+
+- Loan Repayment Due
+- Loan Receivable Due
+- Budget Alert
+- Savings Goal Reminder
+- Recurring Transaction Confirmation
+- Monthly Financial Summary
+- Sync Failure Alert
+
+Support:
+
+- Read / Unread
+- Dismiss
+- Notification History
+- Related Record Link
+
+Add browser push notifications using Firebase Cloud Messaging where configured and supported.
+
+Use server-side scheduling where scheduled execution is needed.
+
+Do not depend on browser timers for notifications while the browser is closed.
+
+==================================================
+22. BENGALI VOICE TRANSACTION ENTRY
+==================================================
+
+Support natural Bengali voice input.
+
+Example:
+
+"আজকে বাজার করার জন্য বিকাশ থেকে ১২০০ টাকা খরচ করেছি, এটা Family Expense হিসেবে রাখো।"
+
+AI should interpret:
+
+- Transaction Type
+- Amount
+- Category
+- Person
+- Account
+- Payment Method
+- Date
+- Time
+- Description
+
+Workflow:
+
+Voice → Speech-to-Text → Gemini Interpretation → Editable Draft → User Confirmation → Save.
+
+Never automatically save an AI-generated financial transaction without explicit user confirmation.
+
+Keep Manual Entry available even when voice or AI services are unavailable.
+
+==================================================
+23. DATA BACKUP AND RESTORE
+==================================================
+
+Every user must have an independent backup.
+
+Support:
+
+- Full JSON Backup
+- Excel Export
+- PDF Export
+- Restore From JSON
+- Backup Validation
+- Duplicate ID Detection
+- Schema Versioning
+
+Before restoring data:
+
+- Validate backup structure.
+- Show the affected record count.
+- Warn about existing data.
+- Offer a backup of current data.
+- Require explicit confirmation.
+
+One user's backup must never include another user's records.
+
+Use Cloud Firestore as primary cloud storage.
+
+Google Sheets may be added later as an optional export integration. Do not implement unrestricted two-way synchronization without explicit configuration.
+
+==================================================
+24. MULTI-USER TESTING
+==================================================
+
+This testing is mandatory.
+
+### Registration Tests
+
+1. User A registers with Google.
+2. User B registers with a different Google account.
+3. User C registers with email and password.
+4. Existing users can sign in.
+5. Password recovery works.
+6. Logout works.
+7. Account linking is secure.
+
+### Data Isolation Tests
+
+1. User A creates an account with ৳10,000.
+2. User B creates an account with ৳5,000.
+3. User A must see only their own ৳10,000 record.
+4. User B must see only their own ৳5,000 record.
+5. User A must not access User B's transaction IDs.
+6. User B must not access User A's account data.
+7. Direct Firestore reads and writes across different UIDs must be denied.
+8. Storage files must also remain private.
+
+### Multi-Device Tests
+
+1. User A logs in on Android.
+2. Creates three financial accounts.
+3. Adds transactions.
+4. Logs in on Desktop using the same account.
+5. All transactions and account balances appear.
+6. Edits a transaction on Desktop.
+7. Updated information synchronizes to Android.
+8. User B's data remains isolated.
+
+### Responsive Tests
+
+Test at:
+
+- 320px
+- 375px
+- 390px
+- 430px
+- 768px
+- 1024px
+- 1280px
+- 1440px
+- 1920px
+
+Verify:
+
+- No horizontal overflow.
+- No broken navigation.
+- No inaccessible buttons.
+- No cut-off forms.
+- Charts resize correctly.
+- Tables work on small screens.
+- Touch controls work.
+- Login pages remain readable.
+
+==================================================
+25. FINANCIAL TEST SCENARIOS
+==================================================
+
+Test these financial scenarios:
+
+1. Bank to bKash Transfer: ৳5,000
+   - Both account balances update.
+   - Income and Expense remain unchanged.
+
+2. Loan Given: ৳5,000
+   - Cash decreases.
+   - Loan Receivable increases.
+   - Expense remains unchanged.
+
+3. Loan Received: ৳10,000
+   - Cash increases.
+   - Loan Liability increases.
+   - Income remains unchanged.
+
+4. Loan Repayment Received: ৳2,000
+   - Loan Receivable decreases.
+   - Cash increases.
+   - Income remains unchanged.
+
+5. Refund: ৳500 on ৳2,000 Expense
+   - Net Expense becomes ৳1,500.
+
+6. Split Expense: ৳2,000
+   - Family ৳1,000.
+   - Personal ৳600.
+   - Wife ৳400.
+   - Reports are correct.
+
+7. Savings Deposit: ৳5,000
+   - Internal account balances update.
+   - No new Income or Expense.
+   - Net Worth remains unchanged.
+
+8. Asset Purchase: ৳20,000
+   - Payment account decreases.
+   - Asset increases.
+   - No duplicate asset counting.
+
+9. Recurring Expense:
+   - Reminder appears.
+   - No posting before confirmation.
+   - Exactly one transaction after confirmation.
+
+10. Offline Transaction:
+    - Local entry is saved.
+    - Later synchronized.
+    - No duplicate record.
+
+11. Multi-Device Conflict:
+    - Both revisions preserved.
+    - User resolves conflict.
+    - Audit record maintained.
+
+==================================================
+26. DEVELOPMENT ROADMAP
+==================================================
+
+Build in these integrated phases.
+
+PHASE 1 — FOUNDATION AND PUBLIC AUTHENTICATION
+
+- React + TypeScript Project
+- Responsive App Layout
+- Firebase Setup
+- Public Google Registration
+- Email/Password Registration
+- Login and Logout
+- Email Verification
+- Password Reset
+- User Profiles
+- UID-based Firestore Structure
+- Firestore and Storage Security Rules
+
+PHASE 2 — CORE FINANCIAL SYSTEM
+
+- Accounts
+- Opening Balances
+- Categories
+- People
+- Income
+- Expense
+- Quick Add
+- Transfers
+- Split Transactions
+- Refund
+- Transaction History
+- Edit / Trash / Audit
+
+PHASE 3 — ADVANCED FINANCE
+
+- Loans
+- Repayments
+- Savings
+- Goals
+- DPS / FDR
+- Assets
+- Liabilities
+- Budgets
+- Recurring Reminders
+
+PHASE 4 — MULTI-DEVICE AND OFFLINE
+
+- PWA
+- Service Worker
+- IndexedDB
+- Firestore Persistent Cache
+- Offline Queue
+- Attachment Queue
+- Cloud Sync
+- Multi-device Conflict Resolution
+- Per-user Local Data Protection
+
+PHASE 5 — DASHBOARD AND REPORTS
+
+- Summary Cards
+- Charts
+- Daily / Weekly / Monthly / Yearly Reports
+- Person-wise Reports
+- Account-wise Reports
+- Export
+- Backup / Restore
+
+PHASE 6 — ADVANCED FEATURES
+
+- Bengali Voice Entry
+- Gemini Integration
+- Notification Center
+- Push Notification Setup
+- Security Review
+- Responsive Testing
+- Final Financial Testing
+
+==================================================
+27. REQUIRED PROJECT DOCUMENTATION
+==================================================
+
+Maintain these files:
+
+README.md
+
+Include:
+- Application Overview
+- Technology Stack
+- Firebase Configuration
+- Authentication Setup
+- Database Structure
+- Security Rules
+- Local Development
+- Build and Deployment
+- Backup and Restore
+
+DEVELOPMENT_STATUS.md
+
+Include:
+- Completed Features
+- In-progress Features
+- Pending Features
+- Known Bugs
+- Firebase Configuration Status
+- Test Results
+- Next Steps
+
+FINANCIAL_LOGIC.md
+
+Include:
+- Account Balance Rules
+- Income Rules
+- Expense Rules
+- Loan Rules
+- Savings Rules
+- Asset Rules
+- Liability Rules
+- Refund Rules
+- Transfer Rules
+- Net Worth Calculations
+
+SECURITY.md
+
+Include:
+- Authentication Flow
+- User Data Isolation
+- Firestore Rules
+- Storage Rules
+- Account Linking
+- Local Device Privacy
+- API Key Protection
+
+==================================================
+28. FINAL EXECUTION INSTRUCTIONS
+==================================================
+
+Start building this application in Google AI Studio Build Mode as a Web Application.
+
+Use the supported Firebase integration workflow.
+
+When Firebase setup requires user permission, request approval through the supported interface.
+
+Do not invent Firebase credentials.
+
+Do not invent user email addresses.
+
+Do not require an administrator to approve ordinary registrations.
+
+Do not use a fixed OWNER_EMAIL.
+
+Do not put financial data in public collections.
+
+Do not use one shared dataset for all users.
+
+Do not expose one user's financial records to another user.
+
+Do not create only a static dashboard.
+
+Build the actual complete application with working database operations, real financial calculations, authentication, security, offline functionality, synchronization, and responsive layouts.
+
+If the entire application cannot be implemented in one generation, complete it phase by phase while preserving the existing code and functionality.
+
+Do not remove working features when implementing later phases.
+
+Before declaring completion, run all critical financial, authentication, authorization, multi-device, and responsive tests.
+
+Clearly report any functionality that still requires Firebase configuration or external setup.
+
+FINAL OBJECTIVE:
+
+Deliver a professional, secure, fully responsive, multi-user Personal Finance Management Website.
+
+Anyone must be able to register using their own Google account or email and password.
+
+Every user must have a separate private financial workspace.
+
+The same user must be able to access their complete financial information from any supported device by signing in with the same account.
+
+The application must work online, support offline operations where the browser permits, and synchronize data safely when connectivity returns.
+
+Build it as a real application that users can depend on for managing their personal financial records.

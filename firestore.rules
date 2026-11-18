@@ -1,0 +1,361 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Entity Validation Helpers
+    function isValidUserProfile(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 100 &&
+             (!('email' in data) || data.email == null || (data.email is string && data.email.size() <= 200)) &&
+             data.currency is string && data.currency.size() <= 10 &&
+             data.language is string && data.language.size() <= 10 &&
+             data.setupCompleted is bool &&
+             (!('updatedAt' in data) || data.updatedAt == null || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidAccount(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+             data.type is string && data.type in ['CASH', 'BANK', 'MOBILE_BANKING', 'SAVINGS', 'DPS_FDR', 'OTHER'] &&
+             (!('provider' in data) || data.provider == null || (data.provider is string && data.provider.size() <= 100)) &&
+             (!('accountNumber' in data) || data.accountNumber == null || (data.accountNumber is string && data.accountNumber.size() <= 50)) &&
+             (!('openingBalance' in data) || data.openingBalance is number) &&
+             data.currentBalance is number &&
+             (!('currency' in data) || (data.currency is string && data.currency.size() <= 10)) &&
+             (!('isArchived' in data) || data.isArchived is bool) &&
+             (!('updatedAt' in data) || data.updatedAt == null || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidTransaction(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.type is string && data.type in ['INCOME', 'EXPENSE', 'TRANSFER', 'LOAN_GIVEN', 'LOAN_RECEIVED', 'LOAN_REPAYMENT_RECEIVED', 'LOAN_REPAYMENT_PAID', 'SAVINGS_DEPOSIT', 'SAVINGS_WITHDRAWAL', 'REFUND', 'ADJUSTMENT'] &&
+             data.amount is number && data.amount >= 0 &&
+             data.accountId is string && data.accountId.size() <= 128 &&
+             (!('accountName' in data) || data.accountName == null || (data.accountName is string && data.accountName.size() <= 100)) &&
+             (!('toAccountId' in data) || data.toAccountId == null || (data.toAccountId is string && data.toAccountId.size() <= 128)) &&
+             (!('toAccountName' in data) || data.toAccountName == null || (data.toAccountName is string && data.toAccountName.size() <= 100)) &&
+             (!('categoryId' in data) || data.categoryId == null || (data.categoryId is string && data.categoryId.size() <= 128)) &&
+             (!('categoryName' in data) || data.categoryName == null || (data.categoryName is string && data.categoryName.size() <= 100)) &&
+             (!('personId' in data) || data.personId == null || (data.personId is string && data.personId.size() <= 128)) &&
+             (!('personName' in data) || data.personName == null || (data.personName is string && data.personName.size() <= 100)) &&
+             data.date is string && data.date.size() <= 30 &&
+             (!('time' in data) || data.time == null || (data.time is string && data.time.size() <= 30)) &&
+             (!('description' in data) || data.description == null || (data.description is string && data.description.size() <= 500)) &&
+             (!('linkedExpenseId' in data) || data.linkedExpenseId == null || (data.linkedExpenseId is string && data.linkedExpenseId.size() <= 128)) &&
+             (!('isSplit' in data) || data.isSplit is bool) &&
+             (!('updatedAt' in data) || data.updatedAt == null || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidLoan(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.type is string && data.type in ['GIVEN', 'TAKEN'] &&
+             data.partyName is string && data.partyName.size() >= 1 && data.partyName.size() <= 100 &&
+             data.principal is number && data.principal >= 0 &&
+             (!('paidAmount' in data) || data.paidAmount is number) &&
+             data.remainingAmount is number &&
+             (!('date' in data) || (data.date is string && data.date.size() <= 30)) &&
+             (!('dueDate' in data) || data.dueDate == null || (data.dueDate is string && data.dueDate.size() <= 30)) &&
+             data.status is string && data.status in ['PENDING', 'PARTIAL', 'COMPLETED', 'OVERDUE'] &&
+             (!('notes' in data) || data.notes == null || (data.notes is string && data.notes.size() <= 500)) &&
+             (!('updatedAt' in data) || data.updatedAt == null || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidLoanRepayment(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.loanId is string && data.loanId.size() <= 128 &&
+             data.amount is number && data.amount > 0 &&
+             data.accountId is string && data.accountId.size() <= 128 &&
+             data.date is string && data.date.size() <= 30 &&
+             (!('notes' in data) || data.notes == null || (data.notes is string && data.notes.size() <= 500));
+    }
+
+    function isValidSavingsGoal(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.title is string && data.title.size() >= 1 && data.title.size() <= 100 &&
+             data.targetAmount is number && data.targetAmount >= 0 &&
+             data.currentAmount is number && data.currentAmount >= 0 &&
+             (!('targetDate' in data) || data.targetDate == null || (data.targetDate is string && data.targetDate.size() <= 30)) &&
+             (!('category' in data) || data.category == null || (data.category is string && data.category.size() <= 50)) &&
+             data.status is string && data.status in ['IN_PROGRESS', 'COMPLETED'] &&
+             (!('updatedAt' in data) || data.updatedAt == null || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidBudget(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.categoryId is string && data.categoryId.size() <= 128 &&
+             data.categoryName is string && data.categoryName.size() <= 100 &&
+             data.month is string && data.month.size() <= 20 &&
+             data.limitAmount is number && data.limitAmount >= 0 &&
+             (!('spentAmount' in data) || data.spentAmount is number) &&
+             (!('alertThreshold' in data) || data.alertThreshold is number) &&
+             (!('updatedAt' in data) || data.updatedAt == null || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidCategory(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+             (!('nameBn' in data) || (data.nameBn is string && data.nameBn.size() <= 100)) &&
+             data.type is string && data.type in ['INCOME', 'EXPENSE'] &&
+             (!('icon' in data) || (data.icon is string && data.icon.size() <= 50)) &&
+             (!('color' in data) || (data.color is string && data.color.size() <= 30)) &&
+             (!('isCustom' in data) || data.isCustom is bool);
+    }
+
+    function isValidPerson(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+             (!('relationship' in data) || data.relationship == null || (data.relationship is string && data.relationship.size() <= 50));
+    }
+
+    function isValidNotification(data) {
+      return data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+             data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
+             (!('titleBn' in data) || data.titleBn == null || (data.titleBn is string && data.titleBn.size() <= 200)) &&
+             data.message is string && data.message.size() >= 1 && data.message.size() <= 1000 &&
+             (!('messageBn' in data) || data.messageBn == null || (data.messageBn is string && data.messageBn.size() <= 1000)) &&
+             data.type is string && data.type in ['loan_due', 'budget_warning', 'savings_reminder', 'recurring_reminder', 'daily_digest', 'sync_alert', 'system'] &&
+             data.isRead is bool &&
+             (!('link' in data) || data.link == null || (data.link is string && data.link.size() <= 200)) &&
+             data.createdAt is string && data.createdAt.size() >= 1 && data.createdAt.size() <= 50;
+    }
+
+    function isValidUserSettings(data) {
+      return data.language is string && data.language in ['bn', 'en'] &&
+             data.currency is string && data.currency.size() >= 1 && data.currency.size() <= 10 &&
+             data.timezone is string && data.timezone.size() >= 1 && data.timezone.size() <= 60 &&
+             (!('theme' in data) || data.theme in ['light', 'dark']) &&
+             (!('pinEnabled' in data) || data.pinEnabled is bool) &&
+             (!('pinHash' in data) || data.pinHash == null || (data.pinHash is string && data.pinHash.size() <= 256)) &&
+             (!('pinSalt' in data) || data.pinSalt == null || (data.pinSalt is string && data.pinSalt.size() <= 128)) &&
+             (!('passwordEnabled' in data) || data.passwordEnabled is bool) &&
+             (!('passwordHash' in data) || data.passwordHash == null || (data.passwordHash is string && data.passwordHash.size() <= 256)) &&
+             (!('passwordSalt' in data) || data.passwordSalt == null || (data.passwordSalt is string && data.passwordSalt.size() <= 128)) &&
+             (!('autoLockMinutes' in data) || data.autoLockMinutes is number) &&
+             (!('budgetAlertThresholds' in data) || (data.budgetAlertThresholds is list && data.budgetAlertThresholds.size() <= 10)) &&
+             (!('isSetupCompleted' in data) || data.isSetupCompleted is bool) &&
+             (!('dailyReminderEnabled' in data) || data.dailyReminderEnabled is bool) &&
+             (!('dailyReminderTime' in data) || (data.dailyReminderTime is string && data.dailyReminderTime.matches('^[0-2][0-9]:[0-5][0-9]$'))) &&
+             (!('lastDailyDigestDate' in data) || data.lastDailyDigestDate == null || (data.lastDailyDigestDate is string && data.lastDailyDigestDate.size() <= 20));
+    }
+
+    // User Root and Subcollections
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+      allow list: if isSignedIn() && request.auth.uid == userId;
+
+      allow create: if isSignedIn() && isValidId(userId) && request.auth.uid == userId &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                       isValidUserProfile(incoming());
+
+      allow update: if isSignedIn() && isValidId(userId) && request.auth.uid == userId &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       isValidUserProfile(incoming()) &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'email', 'currency', 'language', 'setupCompleted', 'updatedAt']);
+
+      allow delete: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+
+      // Subcollection: Accounts
+      match /accounts/{accountId} {
+        allow get: if isSignedIn() && isValidId(accountId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(accountId) && request.auth.uid == userId &&
+                         incoming().userId == request.auth.uid &&
+                         incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                         isValidAccount(incoming());
+
+        allow update: if isSignedIn() && isValidId(accountId) && request.auth.uid == userId &&
+                         incoming().userId == existing().userId &&
+                         incoming().createdAt == existing().createdAt &&
+                         isValidAccount(incoming()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['name', 'type', 'provider', 'accountNumber', 'openingBalance', 'currentBalance', 'currency', 'isArchived', 'updatedAt']);
+
+        allow delete: if isSignedIn() && isValidId(accountId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: Transactions
+      match /transactions/{transactionId} {
+        allow get: if isSignedIn() && isValidId(transactionId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(transactionId) && request.auth.uid == userId &&
+                         incoming().userId == request.auth.uid &&
+                         incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                         isValidTransaction(incoming());
+
+        allow update: if isSignedIn() && isValidId(transactionId) && request.auth.uid == userId &&
+                         incoming().userId == existing().userId &&
+                         incoming().createdAt == existing().createdAt &&
+                         isValidTransaction(incoming()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['type', 'amount', 'accountId', 'accountName', 'toAccountId', 'toAccountName', 'categoryId', 'categoryName', 'personId', 'personName', 'date', 'time', 'description', 'linkedExpenseId', 'isSplit', 'updatedAt']);
+
+        allow delete: if isSignedIn() && isValidId(transactionId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: Loans
+      match /loans/{loanId} {
+        allow get: if isSignedIn() && isValidId(loanId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(loanId) && request.auth.uid == userId &&
+                         incoming().userId == request.auth.uid &&
+                         incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                         isValidLoan(incoming());
+
+        allow update: if isSignedIn() && isValidId(loanId) && request.auth.uid == userId &&
+                         incoming().userId == existing().userId &&
+                         incoming().createdAt == existing().createdAt &&
+                         isValidLoan(incoming()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['type', 'partyName', 'principal', 'paidAmount', 'remainingAmount', 'date', 'dueDate', 'status', 'notes', 'updatedAt']);
+
+        allow delete: if isSignedIn() && isValidId(loanId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: Loan Repayments
+      match /loanRepayments/{repaymentId} {
+        allow get: if isSignedIn() && isValidId(repaymentId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(repaymentId) && request.auth.uid == userId &&
+                         incoming().userId == request.auth.uid &&
+                         incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                         isValidLoanRepayment(incoming());
+
+        allow delete: if isSignedIn() && isValidId(repaymentId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: Savings Goals
+      match /savingsGoals/{goalId} {
+        allow get: if isSignedIn() && isValidId(goalId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(goalId) && request.auth.uid == userId &&
+                         incoming().userId == request.auth.uid &&
+                         incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                         isValidSavingsGoal(incoming());
+
+        allow update: if isSignedIn() && isValidId(goalId) && request.auth.uid == userId &&
+                         incoming().userId == existing().userId &&
+                         incoming().createdAt == existing().createdAt &&
+                         isValidSavingsGoal(incoming()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['title', 'targetAmount', 'currentAmount', 'targetDate', 'category', 'status', 'updatedAt']);
+
+        allow delete: if isSignedIn() && isValidId(goalId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: Budgets
+      match /budgets/{budgetId} {
+        allow get: if isSignedIn() && isValidId(budgetId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(budgetId) && request.auth.uid == userId &&
+                         incoming().userId == request.auth.uid &&
+                         incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                         isValidBudget(incoming());
+
+        allow update: if isSignedIn() && isValidId(budgetId) && request.auth.uid == userId &&
+                         incoming().userId == existing().userId &&
+                         incoming().createdAt == existing().createdAt &&
+                         isValidBudget(incoming()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['categoryId', 'categoryName', 'month', 'limitAmount', 'spentAmount', 'alertThreshold', 'updatedAt']);
+
+        allow delete: if isSignedIn() && isValidId(budgetId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: Categories
+      match /categories/{categoryId} {
+        allow get: if isSignedIn() && isValidId(categoryId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(categoryId) && request.auth.uid == userId &&
+                         incoming().userId == request.auth.uid &&
+                         incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                         isValidCategory(incoming());
+
+        allow update: if isSignedIn() && isValidId(categoryId) && request.auth.uid == userId &&
+                         incoming().userId == existing().userId &&
+                         incoming().createdAt == existing().createdAt &&
+                         isValidCategory(incoming()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['name', 'nameBn', 'type', 'icon', 'color', 'isCustom']);
+
+        allow delete: if isSignedIn() && isValidId(categoryId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: People
+      match /people/{personId} {
+        allow get: if isSignedIn() && isValidId(personId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(personId) && request.auth.uid == userId &&
+                         incoming().userId == request.auth.uid &&
+                         incoming().createdAt is timestamp && incoming().createdAt <= request.time &&
+                         isValidPerson(incoming());
+
+        allow update: if isSignedIn() && isValidId(personId) && request.auth.uid == userId &&
+                         incoming().userId == existing().userId &&
+                         incoming().createdAt == existing().createdAt &&
+                         isValidPerson(incoming()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['name', 'relationship']);
+
+        allow delete: if isSignedIn() && isValidId(personId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: Notifications (including Daily Finance Update alerts)
+      match /notifications/{notifId} {
+        allow get: if isSignedIn() && isValidId(notifId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(notifId) && request.auth.uid == userId &&
+                         incoming().id == notifId &&
+                         isValidNotification(incoming());
+
+        allow update: if isSignedIn() && isValidId(notifId) && request.auth.uid == userId &&
+                         incoming().id == existing().id &&
+                         incoming().type == existing().type &&
+                         incoming().createdAt == existing().createdAt &&
+                         isValidNotification(incoming()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['isRead', 'title', 'titleBn', 'message', 'messageBn', 'link']);
+
+        allow delete: if isSignedIn() && isValidId(notifId) && request.auth.uid == userId;
+      }
+
+      // Subcollection: Settings (preferences + daily notification schedule)
+      match /settings/{settingId} {
+        allow get: if isSignedIn() && isValidId(settingId) && request.auth.uid == userId;
+        allow list: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && isValidId(settingId) && request.auth.uid == userId &&
+                         isValidUserSettings(incoming());
+
+        allow update: if isSignedIn() && isValidId(settingId) && request.auth.uid == userId &&
+                         isValidUserSettings(incoming());
+
+        allow delete: if isSignedIn() && isValidId(settingId) && request.auth.uid == userId;
+      }
+    }
+  }
+}

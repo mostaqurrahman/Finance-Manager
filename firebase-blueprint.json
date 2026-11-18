@@ -1,0 +1,243 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile and financial preferences",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "displayName": { "type": "string", "description": "Display name" },
+        "email": { "type": "string", "description": "Email address" },
+        "currency": { "type": "string", "description": "Primary currency e.g. BDT" },
+        "language": { "type": "string", "description": "Preferred language e.g. bn or en" },
+        "setupCompleted": { "type": "boolean", "description": "Whether first-time setup wizard completed" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp update" }
+      },
+      "required": ["userId", "displayName", "currency", "language", "setupCompleted", "createdAt"]
+    },
+    "Account": {
+      "title": "Account",
+      "description": "Financial accounts: Cash, Bank, Mobile Banking, Savings, DPS, FDR",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "name": { "type": "string", "description": "Account name e.g. Personal Cash, DBBL, bKash" },
+        "type": { "type": "string", "enum": ["CASH", "BANK", "MOBILE_BANKING", "SAVINGS", "DPS_FDR", "OTHER"], "description": "Account type" },
+        "provider": { "type": "string", "description": "Provider name e.g. DBBL, bKash, Cash" },
+        "accountNumber": { "type": "string", "description": "Account or phone number digits" },
+        "openingBalance": { "type": "number", "description": "Initial balance in poisha or BDT" },
+        "currentBalance": { "type": "number", "description": "Calculated current balance" },
+        "currency": { "type": "string", "description": "Currency code" },
+        "isArchived": { "type": "boolean", "description": "Archive state" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp update" }
+      },
+      "required": ["userId", "name", "type", "currentBalance", "createdAt"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Financial transaction record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "type": { "type": "string", "enum": ["INCOME", "EXPENSE", "TRANSFER", "LOAN_GIVEN", "LOAN_RECEIVED", "LOAN_REPAYMENT_RECEIVED", "LOAN_REPAYMENT_PAID", "SAVINGS_DEPOSIT", "SAVINGS_WITHDRAWAL", "REFUND", "ADJUSTMENT"], "description": "Transaction type" },
+        "amount": { "type": "number", "description": "Amount in BDT" },
+        "accountId": { "type": "string", "description": "Source or destination account ID" },
+        "accountName": { "type": "string", "description": "Cached account name" },
+        "toAccountId": { "type": "string", "description": "Target account ID for transfers" },
+        "toAccountName": { "type": "string", "description": "Target account name for transfers" },
+        "categoryId": { "type": "string", "description": "Category ID" },
+        "categoryName": { "type": "string", "description": "Category display name" },
+        "personId": { "type": "string", "description": "Associated person ID" },
+        "personName": { "type": "string", "description": "Associated person name" },
+        "date": { "type": "string", "description": "Transaction date YYYY-MM-DD" },
+        "time": { "type": "string", "description": "Transaction time HH:mm" },
+        "description": { "type": "string", "description": "Description note" },
+        "linkedExpenseId": { "type": "string", "description": "For refunds, reference to original expense" },
+        "isSplit": { "type": "boolean", "description": "Whether split into multiple items" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp update" }
+      },
+      "required": ["userId", "type", "amount", "accountId", "date", "createdAt"]
+    },
+    "Loan": {
+      "title": "Loan",
+      "description": "Loan Given (Receivable) or Loan Taken (Payable)",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "type": { "type": "string", "enum": ["GIVEN", "TAKEN"], "description": "GIVEN (asset) or TAKEN (liability)" },
+        "partyName": { "type": "string", "description": "Borrower or Lender name" },
+        "principal": { "type": "number", "description": "Original loan amount" },
+        "paidAmount": { "type": "number", "description": "Amount repaid so far" },
+        "remainingAmount": { "type": "number", "description": "Remaining balance" },
+        "date": { "type": "string", "description": "Date created YYYY-MM-DD" },
+        "dueDate": { "type": "string", "description": "Due date YYYY-MM-DD" },
+        "status": { "type": "string", "enum": ["PENDING", "PARTIAL", "COMPLETED", "OVERDUE"], "description": "Repayment status" },
+        "notes": { "type": "string", "description": "Additional notes" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp update" }
+      },
+      "required": ["userId", "type", "partyName", "principal", "remainingAmount", "status", "createdAt"]
+    },
+    "LoanRepayment": {
+      "title": "LoanRepayment",
+      "description": "Repayment installment record for a loan",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "loanId": { "type": "string", "description": "Reference loan ID" },
+        "amount": { "type": "number", "description": "Repayment amount" },
+        "accountId": { "type": "string", "description": "Account involved" },
+        "date": { "type": "string", "description": "Repayment date" },
+        "notes": { "type": "string", "description": "Note" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" }
+      },
+      "required": ["userId", "loanId", "amount", "accountId", "date", "createdAt"]
+    },
+    "SavingsGoal": {
+      "title": "SavingsGoal",
+      "description": "Target savings goal tracking",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "title": { "type": "string", "description": "Goal title e.g. Emergency Fund, Hajj, Laptop" },
+        "targetAmount": { "type": "number", "description": "Target amount" },
+        "currentAmount": { "type": "number", "description": "Currently saved amount" },
+        "targetDate": { "type": "string", "description": "Target target date YYYY-MM-DD" },
+        "category": { "type": "string", "description": "Goal category" },
+        "status": { "type": "string", "enum": ["IN_PROGRESS", "COMPLETED"], "description": "Status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp update" }
+      },
+      "required": ["userId", "title", "targetAmount", "currentAmount", "status", "createdAt"]
+    },
+    "Budget": {
+      "title": "Budget",
+      "description": "Monthly category budget tracking",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "categoryId": { "type": "string", "description": "Category ID or 'OVERALL'" },
+        "categoryName": { "type": "string", "description": "Category Name" },
+        "month": { "type": "string", "description": "Budget month format YYYY-MM" },
+        "limitAmount": { "type": "number", "description": "Budget limit amount" },
+        "spentAmount": { "type": "number", "description": "Currently spent amount" },
+        "alertThreshold": { "type": "number", "description": "Alert percentage e.g. 80" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp update" }
+      },
+      "required": ["userId", "categoryId", "categoryName", "month", "limitAmount", "createdAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Income and Expense Category",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "name": { "type": "string", "description": "Category name in BN / EN" },
+        "nameBn": { "type": "string", "description": "Bengali category name" },
+        "type": { "type": "string", "enum": ["INCOME", "EXPENSE"], "description": "Category type" },
+        "icon": { "type": "string", "description": "Icon identifier" },
+        "color": { "type": "string", "description": "Color hex or tag" },
+        "isCustom": { "type": "boolean", "description": "User created or default" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" }
+      },
+      "required": ["userId", "name", "type", "createdAt"]
+    },
+    "Person": {
+      "title": "Person",
+      "description": "Associated Person (Family, Wife, Personal, Friend, Business)",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "name": { "type": "string", "description": "Person name" },
+        "relationship": { "type": "string", "description": "Relationship type" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp creation" }
+      },
+      "required": ["userId", "name", "createdAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app and daily finance update notification item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Notification document ID" },
+        "title": { "type": "string", "description": "English notification title" },
+        "titleBn": { "type": "string", "description": "Bengali notification title" },
+        "message": { "type": "string", "description": "English notification body" },
+        "messageBn": { "type": "string", "description": "Bengali notification body" },
+        "type": { "type": "string", "enum": ["loan_due", "budget_warning", "savings_reminder", "recurring_reminder", "daily_digest", "sync_alert", "system"], "description": "Notification type" },
+        "isRead": { "type": "boolean", "description": "Read status" },
+        "link": { "type": "string", "description": "Optional navigation route" },
+        "createdAt": { "type": "string", "description": "ISO timestamp string" }
+      },
+      "required": ["id", "title", "message", "type", "isRead", "createdAt"]
+    },
+    "UserSettings": {
+      "title": "UserSettings",
+      "description": "User security, localization, and daily reminder settings",
+      "type": "object",
+      "properties": {
+        "language": { "type": "string", "enum": ["bn", "en"], "description": "Preferred UI language" },
+        "currency": { "type": "string", "description": "Currency code" },
+        "timezone": { "type": "string", "description": "Timezone identifier" },
+        "theme": { "type": "string", "enum": ["light", "dark"], "description": "Theme preference" },
+        "pinEnabled": { "type": "boolean", "description": "PIN lock toggle" },
+        "autoLockMinutes": { "type": "number", "description": "Auto-lock timeout in minutes" },
+        "isSetupCompleted": { "type": "boolean", "description": "Setup completion flag" },
+        "dailyReminderEnabled": { "type": "boolean", "description": "Daily finance update reminder enabled" },
+        "dailyReminderTime": { "type": "string", "description": "Daily reminder time in HH:mm format" },
+        "lastDailyDigestDate": { "type": "string", "description": "Last daily digest YYYY-MM-DD" }
+      },
+      "required": ["language", "currency", "timezone"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile document"
+    },
+    "/users/{userId}/accounts/{accountId}": {
+      "schema": { "$ref": "#/entities/Account" },
+      "description": "User financial accounts"
+    },
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "User transaction records"
+    },
+    "/users/{userId}/loans/{loanId}": {
+      "schema": { "$ref": "#/entities/Loan" },
+      "description": "User loan given and loan taken records"
+    },
+    "/users/{userId}/loanRepayments/{repaymentId}": {
+      "schema": { "$ref": "#/entities/LoanRepayment" },
+      "description": "Repayment installments for loans"
+    },
+    "/users/{userId}/savingsGoals/{goalId}": {
+      "schema": { "$ref": "#/entities/SavingsGoal" },
+      "description": "User savings goals"
+    },
+    "/users/{userId}/budgets/{budgetId}": {
+      "schema": { "$ref": "#/entities/Budget" },
+      "description": "User monthly category budgets"
+    },
+    "/users/{userId}/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "User custom and default categories"
+    },
+    "/users/{userId}/people/{personId}": {
+      "schema": { "$ref": "#/entities/Person" },
+      "description": "User people for expense distribution"
+    },
+    "/users/{userId}/notifications/{notifId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User notifications including daily finance update digests"
+    },
+    "/users/{userId}/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/UserSettings" },
+      "description": "User settings including daily finance update reminder preferences"
+    }
+  }
+}

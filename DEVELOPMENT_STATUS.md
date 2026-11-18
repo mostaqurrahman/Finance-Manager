@@ -1,0 +1,33 @@
+# Development Status
+
+## Completed Modules
+- [x] Phase 1: Authentication & User Foundation
+  - Google Sign-In with Jetpack Credential Manager (`GetSignInWithGoogleOption`).
+  - Scoped UID data namespaces in Cloud Firestore (`users/{userId}/...`).
+  - Automatic session detection and silent sign-in (`GetGoogleIdOption`).
+  - Zero-trust security rules with schema validation helpers deployed via `DeployRules`.
+- [x] Phase 2: Core Financial Architecture
+  - Account Management: Cash, Bank, Mobile Banking (bKash/Nagad/Rocket), Savings, DPS/FDR.
+  - Transactions: Income, Expense, Transfer, Refunds, Loan Disbursements.
+  - Calculation Engine: Automatic balance updates upon transaction creation/deletion.
+- [x] Phase 3: Advanced Finance & Loans
+  - Loan Given (Receivable) and Loan Taken (Payable).
+  - Installment/Repayment tracking with balance deduction and status transitions (Pending, Partial, Completed).
+  - Monthly Budgets with category spending and threshold alerts.
+  - Savings Goals with target amounts, current saved, and progress tracking.
+- [x] Phase 4: Offline-First & Multi-Device Sync
+  - Firestore Persistent Disk Cache enabled.
+  - Real-time snapshot observers via Kotlin Coroutine Flows.
+- [x] Phase 5: Dashboard & Analytics
+  - Net Worth, Available Liquid Balance, and 3-way breakdown (Cash, Bank, Mobile).
+  - Income vs Expense progress comparison.
+  - Period filters: Today, This Week, This Month, This Year, All.
+  - Category-wise and person-wise expense distribution.
+- [x] Phase 6: Bengali Voice Input & AI
+  - Firebase AI Logic (`Firebase.ai`) with `gemini-3.8-flash`.
+  - Structured JSON schema output (`Schema.obj`).
+  - Editable draft confirmation card preventing unauthorized auto-saves.
+  - App Check integration with launch intent wiring and debug secret persistence.
+- [x] Testing & Quality Assurance
+  - Unit tests in `FinancialEngineTest.kt` passing.
+  - Local security rules unit tests in `firestore.test.js` passing (5/5).
